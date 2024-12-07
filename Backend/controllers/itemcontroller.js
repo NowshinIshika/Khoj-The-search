@@ -28,10 +28,19 @@ const getItem = async(req,res)=>
 //post new item
 const createItem = async(req,res) =>
 {
-    const {title} = req.body
+    const {title,description} = req.body
+
+    // let empty = []
+    // if(!title){
+    //     empty.push('title')
+    // }
+    // if(empty.length > 0) {
+    //     return res.status(400).json({error:'Please provide a title', empty})
+    // }
+    
     //add item to db
     try{
-        const item= await Item.create({title})
+        const item= await Item.create({title,description})
         res.status(200).json(item)
 
     }
