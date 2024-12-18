@@ -88,11 +88,31 @@ const updateItem = async(req,res)=>{
 
 }
 
+const updateItemStatus = async (req, res) => {
+    const { id } = req.params
+    const { status } = req.body
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'No such item' })
+    }
+
+    try {
+        const item = await Item.findByIdAndUpdate(id, { status }, { new: true })
+        if (!item) {
+            return res.status(404).json({ error: 'No such item' })
+        }
+        res.status(200).json(item);
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+};
+
 
 module.exports = {
     createItem,
     getallItems,
     getItem,
     deleteItem,
-    updateItem
+    updateItem,
+    updateItemStatus
 }

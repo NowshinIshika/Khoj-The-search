@@ -19,5 +19,6 @@ router.delete('/:id',deleteItem)
 
 router.patch('/:id',updateItem)
 
+router.patch('/:id',updateItemStatus)
 
 module.exports = router
