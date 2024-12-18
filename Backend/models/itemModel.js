@@ -12,6 +12,10 @@ const itemSchema = new Schema({
     description: {
         type: String,
     },
+    status:{
+        type: String,
+        default: 'unclaimed'
+    }
 
     
 
