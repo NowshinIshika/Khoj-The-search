@@ -29,12 +29,21 @@ const Home = () => {
         setItems(updatedItems);
     
     }
+    const editItem = (id, updatedData) => {
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item._id === id ? { ...item, ...updatedData } : item
+          )
+        );
+      };
 
     const fetchItems = async () => {
         const response = await fetch('/api/items')
         const json = await response.json()
         return json
     }
+
+
 
     return (
                 
@@ -43,7 +52,7 @@ const Home = () => {
             <ItemForm />
             <div className='item-list'>
                 {items && items.map((item)=>(
-                    <ItemDetails key={item._id} item={item} onDelete={deleteItem}/>
+                    <ItemDetails key={item._id} item={item} onDelete={deleteItem} onEdit ={editItem} />
       
 
                 ))}

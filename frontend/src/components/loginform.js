@@ -67,12 +67,13 @@ const LoginForm = ( ) =>
                 value={email}
                 />
             <label>Password</label>
-                <input type='text'
+                <input type='password'
                 onChange={(e)=> setPassword(e.target.value)}
                 value={password}
                 />
         <p align="center"><button >Login</button></p>
         {error && <div className='error'>{error}</div>}
+        <Link to=''><p align="center">Forgot password?</p></Link>
         </form>
         
 

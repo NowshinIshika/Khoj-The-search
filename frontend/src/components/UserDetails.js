@@ -38,7 +38,7 @@ const UserDetails = () => {
     const handleUpdate = async () => {
         try {
             const response = await fetch(`/userprofile/${user._id}`, {
-                method: "PUT",
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                 },
