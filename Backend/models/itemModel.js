@@ -15,7 +15,29 @@ const itemSchema = new Schema({
     status:{
         type: String,
         default: 'unclaimed'
-    }
+    },
+    claimedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        default: null,
+    },
+    claimRequests: [
+        {
+            userId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'user',
+            },
+            requestedAt: {
+                type: Date,
+                default: Date.now,
+            },
+        },
+    ],
+    approvedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user', // Admin who approved
+        default: null,
+    },
 
     
 
