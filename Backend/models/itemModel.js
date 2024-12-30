@@ -15,9 +15,11 @@ const itemSchema = new Schema({
     status:{
         type: String,
         default: 'Unclaimed'
-    }
-
-    
+    },
+    category:{
+        type:String,
+        default: 'None'
+    },
 
 },{timestamps: true})
 
