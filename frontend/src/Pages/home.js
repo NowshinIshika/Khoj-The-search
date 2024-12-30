@@ -4,8 +4,10 @@ import { useEffect, useState } from "react"
 import ItemDetails from '../components/ItemDetails'
 import ItemForm from "../components/ItemForm"
 
+
 const Home = () => {
     const [items,setItems]=useState(null)
+    
     
 
     useEffect(()=>{
@@ -35,9 +37,11 @@ const Home = () => {
     }
 
     return (
+                
         <div className = "home">
+            
             <ItemForm />
-            <div className='items'>
+            <div className='item-list'>
                 {items && items.map((item)=>(
                     <ItemDetails key={item._id} item={item} onDelete={deleteItem}/>
       

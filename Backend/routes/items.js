@@ -3,7 +3,7 @@ const router = express.Router()
 const{
     createItem,  getallItems,
     getItem, deleteItem,
-    updateItem
+    updateItem, updateItemStatus
 } = require('../controllers/itemcontroller')
 
 //all

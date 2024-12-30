@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express =  require('express')
 const itemRoutes = require('./routes/items')
+const userRoutes = require('./routes/userroute')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -21,8 +22,9 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/items',itemRoutes)
-app.use('/auth', AuthRouter);
+app.use('/auth', AuthRouter)
 
+app.use('/userprofile',userRoutes)
 
 app.get('/ping',(req, res) => {
     res.send('PONG');

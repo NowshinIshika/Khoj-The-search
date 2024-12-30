@@ -1,4 +1,5 @@
 import { useState} from 'react'
+import Navbar from "../components/Navbar";
 
 const ItemForm = ( ) =>
 {
@@ -6,6 +7,7 @@ const ItemForm = ( ) =>
     const [description, setDescription] = useState("")
     const [error, setError] = useState("")
     // const[empty,setEmpty]=useState([])
+    
 
     const handleSubmit = async(e) =>{
         
@@ -37,7 +39,9 @@ const ItemForm = ( ) =>
     }
     
     return(
+        
         <form className="create" onSubmit={handleSubmit}>
+            <Navbar />
             <h3>What did you find?</h3>
 
             <label>Item Title</label>

@@ -37,14 +37,24 @@ const LoginForm = ( ) =>
             setEmail("")
             setPassword("")
             setError(null)
+
+            if (json.success) {
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify({
+                        _id: json._id,
+                        email: json.email,
+                        name: json.name,
+                        jwtToken: json.jwtToken,
+                    })
+                );}
             // setEmpty([])
             navigate('/home')
-            console.log("new member",json)
-        }
+           
 
         
     }
-    
+}
     return(
         <form className="signup" onSubmit={handleSubmit}>
             <h3 align="center">Login</h3>
@@ -68,5 +78,6 @@ const LoginForm = ( ) =>
 
     )
 }
+
 
 export default LoginForm

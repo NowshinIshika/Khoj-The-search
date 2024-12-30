@@ -39,7 +39,7 @@ const SignupForm = ( ) =>
             setPassword("")
             setError(null)
             // setEmpty([])
-            navigate('/login')
+            navigate('/auth/login')
             console.log("new member",json)
         }
 
