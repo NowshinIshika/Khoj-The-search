@@ -16,43 +16,35 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-
-
     role: {
-         type: String, enum: ['user', 'admin'], default: 'user' },
-    createdAt: { type: Date, default: Date.now }
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 });
 
-module.exports = mongoose.model('User', userSchema);
-
-
-
+// Hash the password before saving the user
 UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
+    if (this.isModified('password') || this.isNew) {
+        try {
+            const salt = await bcrypt.genSalt(10);
+            this.password = await bcrypt.hash(this.password, salt);
+            next();
+        } catch (error) {
+            next(error);
+        }
+    } else {
+        next();
+    }
 });
 
-const UserModel = mongoose.model('user', UserSchema);
-module.exports = UserModel;
+// Method to compare passwords
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+    return await bcrypt.compare(candidatePassword, this.password);
+};
 
-const express = require('express');
-const dotenv = require('dotenv');
-const connectDB = require('./config/db');
-const adminRoutes = require('./routes/adminRoutes');
-
-dotenv.config();
-const app = express();
-
-// Middleware
-app.use(express.json());
-
-// Database Connection
-connectDB();
-
-// Routes
-app.use('/api/admin', adminRoutes);
-
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = mongoose.model('User', UserSchema);

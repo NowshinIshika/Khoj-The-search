@@ -1,19 +1,20 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const User = require('../Models/User');
 
 // Verify if User is Authenticated
 const isAuthenticated = async (req, res, next) => {
     try {
-        const token = req.header('Authorization');
-        if (!token) return res.status(401).json({ error: "No token, authorization denied." });
+        if (!req.session.userId) {
+            return res.status(401).json({ error: "No session, authorization denied." });
+        }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = await User.findById(decoded.id);
-        if (!req.user) return res.status(404).json({ error: "User not found." });
+        req.user = await User.findById(req.session.userId);
+        if (!req.user) {
+            return res.status(404).json({ error: "User not found." });
+        }
 
         next();
     } catch (error) {
-        res.status(401).json({ error: "Token is invalid" });
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 

@@ -1,18 +1,20 @@
 const Joi = require('joi');
 
+// Signup validation middleware
 const signupValidation = (req, res, next) => {
     const schema = Joi.object({
-        name: Joi.string().min(3).max(100).required(),
+        name: Joi.string().required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(4).max(100).required()
     });
     const { error } = schema.validate(req.body);
     if (error) {
-        return res.status(400)
-            .json({ message: "Bad request", error })
+        return res.status(400).json({ message: "Bad request", error });
     }
     next();
-}
+};
+
+// Login validation middleware
 const loginValidation = (req, res, next) => {
     const schema = Joi.object({
         email: Joi.string().email().required(),
@@ -20,33 +22,21 @@ const loginValidation = (req, res, next) => {
     });
     const { error } = schema.validate(req.body);
     if (error) {
-        return res.status(400)
-            .json({ message: "Bad request", error })
+        return res.status(400).json({ message: "Bad request", error });
     }
     next();
-}
+};
+
+// Session-based authentication middleware
+const isAuthenticated = (req, res, next) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ error: 'Access denied. No session found.' });
+    }
+    next();
+};
+
 module.exports = {
     signupValidation,
-    loginValidation
-}
-
-
-const jwt = require('jsonwebtoken');
-const user = require('../Models/user');
-
-module.exports = async (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-
-  if (!token) {
-    return res.status(401).json({ error: 'Access denied. No token provided.' });
-  }
-
-  try {
-  
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; 
-    next();
-  } catch (error) {
-    res.status(400).json({ error: 'Invalid token.' });
-  }
+    loginValidation,
+    isAuthenticated
 };
