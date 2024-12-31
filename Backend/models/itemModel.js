@@ -20,6 +20,9 @@ const itemSchema = new Schema({
         type:String,
         default: 'None'
     },
+    photo: {
+        type: String, 
+    },
 
 },{timestamps: true})
 

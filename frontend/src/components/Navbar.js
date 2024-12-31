@@ -36,7 +36,7 @@ const Navbar = () => {
                         <li>
                             <Link to="/contact" onClick={toggleNavbar}>Contact</Link>
                         </li>
-                        {user ? (
+                       
                             <li>
                                 <Link to="/auth/login" onClick={() => {
                                     localStorage.removeItem('user'); 
@@ -44,11 +44,7 @@ const Navbar = () => {
                                     toggleNavbar();
                                 }}>Logout</Link>
                             </li>
-                        ) : (
-                            <li>
-                                <Link to="/auth/login" onClick={toggleNavbar}>Login</Link>
-                            </li>
-                        )}
+                        
                     </ul>
                 </div>
             </div>

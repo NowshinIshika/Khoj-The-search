@@ -1,5 +1,6 @@
 const Item = require('../models/itemModel')
 const mongoose = require('mongoose')
+const upload = require('../Middlewares/multer')
 //get all items
 const getallItems = async(req,res)=>
 {
@@ -29,9 +30,13 @@ const getItem = async(req,res)=>
 const createItem = async(req,res) =>
 {
     const {title,description, category} = req.body
+    if (!req.file) {
+        return res.status(400).json({ error: "Photo is required" })
+    }
 
     try{
-        const item= await Item.create({title,description,category})
+        const photoPath = `/uploads/${req.file.filename}`
+        const item= await Item.create({title,description,category, photo:photoPath})
         res.status(200).json(item)
 
     }
