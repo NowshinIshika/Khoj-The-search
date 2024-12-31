@@ -1,40 +1,40 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { useState } from "react"
+import { useNavigate } from "react-router"
+import formatDistanceToNow from "date-fns/formatDistanceToNow"
 
 const ItemDetails = ({ item, onDelete, onEdit }) => {
-  const navigate = useNavigate();
-  const categories = ["Electronics", "Furniture", "Sale", "Discount"];
+  const navigate = useNavigate()
+  const categories = ["Electronics", "Books", "Stationary", "Money", "Other"]
 
   const handleClick = async () => {
-    const isConfirmed = window.confirm("Are you sure you want to delete this item?");
+    const isConfirmed = window.confirm("Are you sure you want to delete this item?")
 
     if (isConfirmed) {
       try {
         const response = await fetch('api/items/' + item._id, {
           method: 'DELETE',
-        });
-        const json = await response.json();
+        })
+        const json = await response.json()
         if (response.ok) {
-          onDelete(item._id);
-          console.log('Item Deleted', json);
+          onDelete(item._id)
+          console.log('Item Deleted', json)
         } else {
-          console.error('Failed to delete item', json);
+          console.error('Failed to delete item', json)
         }
       } catch (error) {
-        console.error('Error:', error.message);
+        console.error('Error:', error.message)
       }
     } else {
-      console.log('Item deletion canceled');
+      console.log('Item deletion canceled')
     }
-  };
+  }
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false)
   const [editedData, setEditedData] = useState({
     title: item.title,
     description: item.description,
-    category: item.category || [],
-  });
+    category: item.category,
+  })
 
   const handleEdit = async () => {
     try {
@@ -42,37 +42,36 @@ const ItemDetails = ({ item, onDelete, onEdit }) => {
         title: editedData.title, 
         description: editedData.description,
         category: editedData.category,
-      };
+      }
 
       const response = await fetch('api/items/' + item._id, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
-      });
-      const json = await response.json();
+      })
+      const json = await response.json()
 
       if (response.ok) {
-        console.log('Item Updated:', json);
-        onEdit(item._id, updatedData);
-        navigate(0);
+        console.log('Item Updated:', json)
+        onEdit(item._id, updatedData)
+        navigate(0)
       } else {
-        console.error('Failed to update item:', json.message || 'Unknown error');
+        console.error('Failed to update item:', json.message || 'Unknown error')
       }
     } catch (error) {
-      console.error('Error:', error.message);
+      console.error('Error:', error.message)
     }
-  };
+  }
 
   const handleCancel = () => {
-    setEditedData({ title: item.title, description: item.description, category: item.category });
-    setIsEditing(false);
-  };
+    setEditedData({ title: item.title, description: item.description, category: item.category })
+    setIsEditing(false)
+  }
 
-  const handleCategoryChange = (e) => {
-    const selectedCategories = Array.from(e.target.selectedOptions, option => option.value);
-    setEditedData({ ...editedData, category: selectedCategories });
-  };
 
+  if (item.photo) {
+    console.log(item.photo);
+  }
   return (
     <div className="item-details">
       {isEditing ? (
@@ -94,9 +93,10 @@ const ItemDetails = ({ item, onDelete, onEdit }) => {
           />
           <label>Category:</label>
           <select
-            multiple
             value={editedData.category}
-            onChange={handleCategoryChange}
+            onChange={(e) =>
+              setEditedData({ ...editedData, category: e.target.value })
+            }
           >
             {categories.map((category, index) => (
               <option key={index} value={category}>
@@ -111,18 +111,30 @@ const ItemDetails = ({ item, onDelete, onEdit }) => {
         <>
           <h4>{item.title}</h4>
           <p className="item-description">{item.description}</p>
+          
+          {item.photo &&  (
+            
+        <img
+            src={`http://localhost:3000${item.photo}`}
+            alt={item.title}
+            style={{ width: 'auto', height: 'auto' }}
+        />
+
+            
+          )}
           <p>Category: {item.category}</p>
           <p>
             Posted:{" "}
             {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
           </p>
           <p>Status: {item.status}</p>
-          <button onClick={() => setIsEditing(true)}>Edit</button>
+          <span style={{ backgroundColor: 'green', color: 'white' ,padding: '10px 10px',marginRight: '45px'}}  onClick={() => setIsEditing(true)}>Edit</span>
           <span onClick={handleClick}>X</span>
         </>
       )}
     </div>
-  );
-};
+  )
+  
+}
 
-export default ItemDetails;
+export default ItemDetails
