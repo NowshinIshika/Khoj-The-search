@@ -1,4 +1,4 @@
-const Item = require('../models/Item');
+const Item = require('../models/itemModel');
 
 // 1. Get All Items Pending Approval
 const getPendingItems = async (req, res) => {
@@ -192,4 +192,39 @@ const getAnnouncements = async (req, res) => {
     }
 };
 
-module.exports = { createAnnouncement, getAnnouncements };
+const approveClaim = async (req, res) => {
+    try {
+        const itemId = req.params.id; // Get the item ID from the URL parameters
+        const { userId } = req.body; // Get the user ID from the request body (who is claiming the item)
+
+        const item = await Item.findById(itemId); // Find the item by its ID
+
+        if (!item) {
+            return res.status(404).json({ error: "Item not found" }); // Return error if the item is not found
+        }
+
+        if (item.status !== 'approved') {
+            return res.status(400).json({ error: "Item must be approved before it can be claimed" }); // Check if the item is approved first
+        }
+
+        // Find the claim request that matches the userId
+        const claimRequestIndex = item.claimRequests.findIndex(request => request.user.toString() === userId);
+
+        if (claimRequestIndex === -1) {
+            return res.status(400).json({ error: "Claim request not found for this user" }); // If no matching claim request is found
+        }
+
+        // Approve the claim request
+        item.status = 'claimed'; // Set the item's status to 'claimed'
+        item.claimedBy = userId; // Set the 'claimedBy' field to the userId of the claimant
+        item.claimRequests = []; // Clear the claimRequests array as the request is now processed
+
+        await item.save(); // Save the changes to the item
+
+        res.status(200).json({ message: "Claim approved successfully", item }); // Return success response
+    } catch (error) {
+        res.status(500).json({ error: "Failed to approve claim" }); // Return error if something goes wrong
+    }
+};
+
+module.exports = { createAnnouncement, getAnnouncements, approveClaim };
