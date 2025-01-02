@@ -27,24 +27,7 @@ const UserSchema = new Schema({
     }
 });
 
-// Hash the password before saving the user
-UserSchema.pre('save', async function (next) {
-    if (this.isModified('password') || this.isNew) {
-        try {
-            const salt = await bcrypt.genSalt(10);
-            this.password = await bcrypt.hash(this.password, salt);
-            next();
-        } catch (error) {
-            next(error);
-        }
-    } else {
-        next();
-    }
-});
+// Check if the model is already defined before defining it again
+const UserModel = mongoose.models.User || mongoose.model('User', UserSchema);
 
-// Method to compare passwords
-UserSchema.methods.comparePassword = async function (candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password);
-};
-
-module.exports = mongoose.model('User', UserSchema);
+module.exports = UserModel;
